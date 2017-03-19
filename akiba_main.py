@@ -1,0 +1,94 @@
+import tkinter as tk   # python3
+#import Tkinter as tk   # python
+from akiba_class.akibaGame import *
+
+TITLE_FONT = ("Helvetica", 18, "bold")
+
+class SampleApp(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+
+        # the container is where we'll stack a bunch of frames
+        # on top of each other, then the one we want visible
+        # will be raised above the others
+
+        # Empêche le redimensionnement et met la fenetre en 500*500
+
+        self.resizable(width=False, height=False)
+        self.geometry("648x328")
+        
+        container = tk.Frame(self)
+        
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        container.update()
+
+        container.translateX = ((container.winfo_width()/2) - 82)
+        container.translateY = ((container.winfo_height()/2) - 20)
+
+        self.frames = {}
+        self.frames["MainPage"] = MainPage(parent=container, controller=self)
+        self.frames["GameWindow"] = GameWindow(parent=container, controller=self)
+        self.frames["OptionsWindow"] = OptionsWindow(parent=container, controller=self)
+
+        self.frames["MainPage"].grid(row=0, column=0, sticky="nsew")
+        self.frames["GameWindow"].grid(row=0, column=0, sticky="nsew")
+        self.frames["OptionsWindow"].grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("MainPage")
+
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+
+
+class MainPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        frame_init(self, parent, controller)
+        label = tk.Label(self, text="Jeu du Akiba", font=TITLE_FONT)
+        label.pack(side="top", fill="x", pady=10)
+        self.update()
+
+        playButton      = tk.Button(self, text="Jouer", command=lambda: controller.show_frame("GameWindow"))
+        optionButton    = tk.Button(self, text="Options", command=lambda: controller.show_frame("OptionsWindow"))
+        quitButton      = tk.Button(self, text="Quitter", command=lambda: controller.destroy())
+
+        
+        
+        playButton.pack()
+        playButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY - 50))
+        optionButton.pack()
+        optionButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY + 20))
+        quitButton.pack()
+        quitButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY + 90))
+
+
+class GameWindow(tk.Frame):
+
+    def __init__(self, parent, controller):
+        frame_init(self, parent, controller)
+        print(AkibaGame())
+        test = AkibaGame()
+
+
+class OptionsWindow(tk.Frame):
+
+    def __init__(self, parent, controller):
+        frame_init(self, parent, controller)
+        label = tk.Label(self, text="This is page 2", font=TITLE_FONT)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("MainPage"))
+        button.pack()
+
+def frame_init(self, parent, controller):
+    tk.Frame.__init__(self, parent)
+    self.controller = controller
+    
+if __name__ == "__main__":
+    app = SampleApp()
+    app.mainloop()
