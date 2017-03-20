@@ -25,9 +25,6 @@ class SampleApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.update()
 
-        container.translateX = ((container.winfo_width()/2) - 82)
-        container.translateY = ((container.winfo_height()/2) - 20)
-
         self.frames = {}
         self.frames["MainPage"] = MainPage(parent=container, controller=self)
         self.frames["GameWindow"] = GameWindow(parent=container, controller=self)
@@ -40,7 +37,9 @@ class SampleApp(tk.Tk):
         self.show_frame("MainPage")
 
     def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
+
+        # On place la page appelé en haut du tas, afin que ce soit celle affiché.
+        
         frame = self.frames[page_name]
         frame.tkraise()
 
@@ -53,26 +52,33 @@ class MainPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
         self.update()
 
-        playButton      = tk.Button(self, text="Jouer", command=lambda: controller.show_frame("GameWindow"))
+        # On instancie les widgets.
+        
+        playButton      = tk.Button(self, text="Jouer", command=lambda: playOnClick(self, parent, controller))
         optionButton    = tk.Button(self, text="Options", command=lambda: controller.show_frame("OptionsWindow"))
         quitButton      = tk.Button(self, text="Quitter", command=lambda: controller.destroy())
 
-        
+        # On place les widgets.
         
         playButton.pack()
-        playButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY - 50))
+        playButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) - 50))
         optionButton.pack()
-        optionButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY + 20))
+        optionButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) + 20))
         quitButton.pack()
-        quitButton.place(bordermode="outside", height=40, width=164, x=parent.translateX, y=(parent.translateY + 90))
+        quitButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) + 90))
 
+        def playOnClick(self, parent, controller):
+            akiba = AkibaGame(controller.frames["GameWindow"])
+
+            # On instancie le l'affichage de GameWindow après l'initialisation complète des widgets propre à cette objet.
+            
+            controller.show_frame("GameWindow")
+            
 
 class GameWindow(tk.Frame):
 
     def __init__(self, parent, controller):
         frame_init(self, parent, controller)
-        print(AkibaGame())
-        test = AkibaGame()
 
 
 class OptionsWindow(tk.Frame):
@@ -84,6 +90,16 @@ class OptionsWindow(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("MainPage"))
         button.pack()
+
+def calc(container, pos="x", height=40, width=164):
+    if pos == "x":
+        print((container.winfo_width()/2) - (width/2))
+        return ((container.winfo_width()/2) - (width/2))
+    elif pos == "y":
+        print((container.winfo_height()/2) - (height/2))
+        return ((container.winfo_height()/2) - (height/2))
+    else:
+        return 0
 
 def frame_init(self, parent, controller):
     tk.Frame.__init__(self, parent)
