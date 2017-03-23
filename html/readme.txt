@@ -1,0 +1,1 @@
+Ici se trouvent/trouverons les fichiers HTML/CSS/JS du site, servant de documentation quant au règlement du jeu akiba.
