@@ -1,6 +1,6 @@
 import tkinter as tk   # python3
 #import Tkinter as tk   # python
-from akiba_class.akibaGame import *
+from akiba_class.game import *
 
 TITLE_FONT = ("Helvetica", 18, "bold")
 
@@ -13,7 +13,7 @@ class SampleApp(tk.Tk):
         # on top of each other, then the one we want visible
         # will be raised above the others
 
-        # Empêche le redimensionnement et met la fenetre en 500*500
+        # Empêche le redimensionnement et met la fenetre en 648*328
 
         self.resizable(width=False, height=False)
         self.geometry("648x328")
@@ -54,25 +54,32 @@ class MainPage(tk.Frame):
 
         # On instancie les widgets.
         
-        playButton      = tk.Button(self, text="Jouer", command=lambda: playOnClick(self, parent, controller))
+        onePlayer       = tk.Button(self, text="1 Joueur", command=lambda: self.playOnClick(parent, controller, 1))
+        twoPlayer       = tk.Button(self, text="2 Joueurs", command=lambda: self.playOnClick(parent, controller, 2))
         optionButton    = tk.Button(self, text="Options", command=lambda: controller.show_frame("OptionsWindow"))
         quitButton      = tk.Button(self, text="Quitter", command=lambda: controller.destroy())
 
         # On place les widgets.
         
-        playButton.pack()
-        playButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) - 50))
+        onePlayer.pack()
+        onePlayer.place(bordermode="outside", height=40, width=164, x=(calc(pos="x", container=parent) - 92), y=(calc(pos="y", container=parent) - 50))
+        twoPlayer.pack()
+        twoPlayer.place(bordermode="outside", height=40, width=164, x=(calc(pos="x", container=parent) + 92), y=(calc(pos="y", container=parent) - 50))
         optionButton.pack()
         optionButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) + 20))
         quitButton.pack()
         quitButton.place(bordermode="outside", height=40, width=164, x=calc(pos="x", container=parent), y=(calc(pos="y", container=parent) + 90))
 
-        def playOnClick(self, parent, controller):
-            akiba = AkibaGame(controller.frames["GameWindow"])
+    def playOnClick(self, parent, controller, nbPlayer):
+        akiba = Game(controller.frames["GameWindow"])
 
-            # On instancie le l'affichage de GameWindow après l'initialisation complète des widgets propre à cette objet.
+        for i in range(25):
+            print(i)
+            akiba.addPlayers(controller.frames["GameWindow"], "Joueur-" + str(i+1))
+
+        # On instancie le l'affichage de GameWindow après l'initialisation complète des widgets propre à cette objet.
             
-            controller.show_frame("GameWindow")
+        controller.show_frame("GameWindow")
             
 
 class GameWindow(tk.Frame):
